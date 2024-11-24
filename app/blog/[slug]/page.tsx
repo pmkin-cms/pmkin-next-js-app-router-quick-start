@@ -1,6 +1,7 @@
 import { gql } from '@apollo/client'
 import dayjs from 'dayjs'
 import { Metadata } from 'next'
+import Image from 'next/image'
 import ReactMarkdown from 'react-markdown'
 
 import { client } from '../../lib/apollo-client'
@@ -97,10 +98,12 @@ export default async function BlogPost({
 
       {document.coverImage && (
         <div className="w-full aspect-video">
-          <img
+          <Image
             alt={document.title}
             className="w-full h-full object-cover"
             src={document.coverImage.url}
+            width={608}
+            height={342}
           />
         </div>
       )}
