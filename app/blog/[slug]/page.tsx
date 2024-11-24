@@ -1,4 +1,5 @@
 import { gql } from '@apollo/client'
+import dayjs from 'dayjs'
 import { Metadata } from 'next'
 import ReactMarkdown from 'react-markdown'
 
@@ -10,9 +11,13 @@ const GET_DOCUMENT = gql`
   query GetDocument($slug: String!) {
     documentBySlug(slug: $slug) {
       id
+      coverImage {
+        url
+      }
       markdown
       metaDescription
       metaTitle
+      publishedAt
       title
     }
   }
@@ -20,19 +25,23 @@ const GET_DOCUMENT = gql`
 
 interface Document {
   id: string
+  coverImage?: {
+    url: string
+  }
   markdown: string
   metaDescription: string
   metaTitle: string
+  publishedAt: string
   title: string
 }
 
-async function getDocument(slug: string): Promise<Document> {
+async function getDocument(slug: string): Promise<Document | undefined> {
   const { data } = await client.query({
     query: GET_DOCUMENT,
     variables: { slug }
   })
 
-  return data.documentBySlug
+  return data.documentBySlug ?? undefined
 }
 
 export async function generateMetadata({
@@ -41,6 +50,13 @@ export async function generateMetadata({
   params: { slug: string }
 }): Promise<Metadata> {
   const document = await getDocument(params.slug)
+
+  if (!document) {
+    return {
+      title: 'Not found',
+      description: 'This blog post could not be found.'
+    }
+  }
 
   return {
     title: document.metaTitle ?? document.title,
@@ -55,9 +71,39 @@ export default async function BlogPost({
 }) {
   const document = await getDocument(params.slug)
 
+  if (!document) {
+    return (
+      <div className="p-8 space-y-4">
+        <div>
+          <h1 className="text-gray-900 font-medium text-lg md:text-4xl hover:text-black mb-2">
+            Post not found
+          </h1>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="p-8 space-y-4">
-      <h1 className="text-black text-2xl md:text-3xl">{document.title}</h1>
+      <div>
+        <h1 className="text-gray-900 font-medium text-lg md:text-4xl hover:text-black mb-2">
+          {document.title}
+        </h1>
+
+        <div className="text-xs text-gray-600 font-semibold">
+          {dayjs(document.publishedAt).format('D MMMM, YYYY')}
+        </div>
+      </div>
+
+      {document.coverImage && (
+        <div className="w-full aspect-video">
+          <img
+            alt={document.title}
+            className="w-full h-full object-cover"
+            src={document.coverImage.url}
+          />
+        </div>
+      )}
 
       <article>
         <ReactMarkdown>{document.markdown}</ReactMarkdown>

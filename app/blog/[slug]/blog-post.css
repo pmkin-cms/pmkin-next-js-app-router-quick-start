@@ -5,23 +5,27 @@ article {
 }
 
 h1 {
+  color: #000;
   font-size: 2.5rem;
   margin-bottom: 1.5rem;
-  color: #1a1a1a;
 }
 
 h2 {
-  font-size: 2rem;
+  color: #000;
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 2rem;
   margin-top: 2rem;
-  margin-bottom: 1rem;
-  color: #2a2a2a;
+  margin-bottom: 0.75rem;
 }
 
 h3 {
-  font-size: 1.5rem;
-  margin-top: 1.5rem;
+  color: #000;
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.75rem;
+  margin-top: 2rem;
   margin-bottom: 0.75rem;
-  color: #3a3a3a;
 }
 
 p {
