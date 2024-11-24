@@ -37,7 +37,7 @@ export default function RootLayout({
                 className="font-semibold text-black"
                 href="/"
               >
-                My PMKIN Blog
+                My Travel Blog
               </Link>
             </div>
           </div>

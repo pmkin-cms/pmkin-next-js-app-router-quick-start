@@ -1,51 +1,11 @@
-import { gql } from '@apollo/client'
 import dayjs from 'dayjs'
 import { Metadata } from 'next'
 import Image from 'next/image'
 import ReactMarkdown from 'react-markdown'
 
-import { client } from '../../lib/apollo-client'
+import { getDocument } from '@/app/lib/document'
 
 import './blog-post.css'
-
-const GET_DOCUMENT = gql`
-  query GetDocument($slug: String!) {
-    documentBySlug(slug: $slug) {
-      id
-      coverImage {
-        url
-      }
-      markdown
-      metaDescription
-      metaTitle
-      publishedAt
-      title
-    }
-  }
-`
-
-interface Document {
-  id: string
-  coverImage?: {
-    url: string
-  }
-  markdown: string
-  metaDescription: string
-  metaTitle: string
-  publishedAt: string
-  title: string
-}
-
-async function getDocument(slug: string): Promise<Document | undefined> {
-  const { data } = await client.query({
-    query: GET_DOCUMENT,
-    variables: {
-      slug: decodeURIComponent(slug)
-    }
-  })
-
-  return data.documentBySlug ?? undefined
-}
 
 export async function generateMetadata({
   params
@@ -61,9 +21,23 @@ export async function generateMetadata({
     }
   }
 
+  const title = `${document.metaTitle ?? document.title} | My Travel Blog`
+  const description =
+    document.metaDescription ?? `Read more about ${document.title}`
+
   return {
-    title: document.metaTitle ?? document.title,
-    description: document.metaDescription
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      type: 'article'
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description
+    }
   }
 }
 

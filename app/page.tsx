@@ -1,5 +1,6 @@
 import { gql } from '@apollo/client'
 import dayjs from 'dayjs'
+import { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
 
@@ -35,6 +36,26 @@ async function getDocuments(): Promise<Document[]> {
   const { data } = await client.query({ query: GET_DOCUMENTS })
 
   return data.documents
+}
+
+export async function generateMetadata(): Promise<Metadata> {
+  const title = 'My Travel Blog'
+  const description = `Read the latest blog posts from My Travel Blog.`
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      type: 'article'
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description
+    }
+  }
 }
 
 export default async function BlogList() {
