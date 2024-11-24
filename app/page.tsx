@@ -1,4 +1,6 @@
 import { gql } from '@apollo/client'
+import dayjs from 'dayjs'
+import Image from 'next/image'
 import Link from 'next/link'
 
 import { client } from './lib/apollo-client'
@@ -7,7 +9,11 @@ const GET_DOCUMENTS = gql`
   query GetDocuments {
     documents(includeDrafts: false) {
       id
+      coverImage {
+        url
+      }
       metaDescription
+      publishedAt
       slug
       title
     }
@@ -16,7 +22,11 @@ const GET_DOCUMENTS = gql`
 
 interface Document {
   id: string
+  coverImage?: {
+    url: string
+  }
   metaDescription: string
+  publishedAt: string
   slug: string
   title: string
 }
@@ -32,24 +42,46 @@ export default async function BlogList() {
 
   return (
     <div className="p-8 space-y-8">
-      <h1 className="text-black text-2xl md:text-3xl">Blog Posts</h1>
+      <h1 className="text-3xl md:text-4xl text-black font-poppins font-bold mb-8">
+        Blog posts
+      </h1>
 
-      <div className="space-y-8">
+      <div className="space-y-12">
         {documents.map((doc) => (
           <article
             key={doc.id}
-            className="space-y-1 border-b border-slate-200 pb-8"
+            className="space-y-2"
           >
-            <h2 className="text-black font-medium text-lg hover:underline">
+            {doc.coverImage && (
+              <div className="w-full aspect-video">
+                <Image
+                  alt={doc.title}
+                  className="w-full h-full object-cover "
+                  src={doc.coverImage.url}
+                  width={500}
+                  height={280}
+                />
+              </div>
+            )}
+
+            <div className="max-w-lg">
               <Link
-                className="text-black"
+                className="text-gray-900 font-medium text-lg md:text-2xl hover:text-black"
                 href={`/blog/${doc.slug}`}
               >
                 {doc.title}
               </Link>
-            </h2>
+            </div>
 
-            <p>{doc.metaDescription}</p>
+            {doc.metaDescription && (
+              <div className="text-gray-700 text-sm leading-6 max-w-2xl">
+                {doc.metaDescription}
+              </div>
+            )}
+
+            <div className="text-xs text-gray-600 font-semibold">
+              {dayjs(doc.publishedAt).format('D MMMM, YYYY')}
+            </div>
           </article>
         ))}
       </div>
