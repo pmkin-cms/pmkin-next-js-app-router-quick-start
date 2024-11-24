@@ -39,7 +39,9 @@ interface Document {
 async function getDocument(slug: string): Promise<Document | undefined> {
   const { data } = await client.query({
     query: GET_DOCUMENT,
-    variables: { slug }
+    variables: {
+      slug: decodeURIComponent(slug)
+    }
   })
 
   return data.documentBySlug ?? undefined
