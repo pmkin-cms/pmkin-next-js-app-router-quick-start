@@ -1,5 +1,6 @@
-import { getDocument } from '@/app/lib/document'
 import { ImageResponse } from 'next/og'
+
+import { pmkin } from '@/app/lib/pmkin'
 
 export const contentType = 'image/png'
 export const size = {
@@ -9,9 +10,9 @@ export const size = {
 export const runtime = 'edge'
 
 export default async function Image({ params }: { params: { slug: string } }) {
-  const slug = params.slug
-
-  const document = await getDocument(slug)
+  const document = await pmkin.findDocumentBySlug(
+    decodeURIComponent(params.slug)
+  )
 
   return new ImageResponse(
     (

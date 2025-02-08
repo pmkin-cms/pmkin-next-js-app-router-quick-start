@@ -76,7 +76,8 @@ img {
   margin: 1.5rem 0;
 }
 
-ul, ol {
+ul,
+ol {
   list-style: circle;
   margin-bottom: 1.5rem;
   padding-left: 2rem;

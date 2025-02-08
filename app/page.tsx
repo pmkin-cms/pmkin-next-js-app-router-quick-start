@@ -1,42 +1,9 @@
-import { gql } from '@apollo/client'
 import dayjs from 'dayjs'
 import { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
 
-import { client } from './lib/apollo-client'
-
-const GET_DOCUMENTS = gql`
-  query GetDocuments {
-    documents(includeDrafts: false) {
-      id
-      coverImage {
-        url
-      }
-      metaDescription
-      publishedAt
-      slug
-      title
-    }
-  }
-`
-
-interface Document {
-  id: string
-  coverImage?: {
-    url: string
-  }
-  metaDescription: string
-  publishedAt: string
-  slug: string
-  title: string
-}
-
-async function getDocuments(): Promise<Document[]> {
-  const { data } = await client.query({ query: GET_DOCUMENTS })
-
-  return data.documents
-}
+import { pmkin } from './lib/pmkin'
 
 export async function generateMetadata(): Promise<Metadata> {
   const title = 'My Travel Blog'
@@ -59,7 +26,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function BlogList() {
-  const documents = await getDocuments()
+  const documents = await pmkin.listDocuments()
 
   return (
     <div className="p-8 space-y-8">

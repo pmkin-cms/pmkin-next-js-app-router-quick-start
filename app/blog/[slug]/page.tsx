@@ -3,7 +3,7 @@ import { Metadata } from 'next'
 import Image from 'next/image'
 import ReactMarkdown from 'react-markdown'
 
-import { getDocument } from '@/app/lib/document'
+import { pmkin } from '@/app/lib/pmkin'
 
 import './blog-post.css'
 
@@ -12,7 +12,9 @@ export async function generateMetadata({
 }: {
   params: { slug: string }
 }): Promise<Metadata> {
-  const document = await getDocument(params.slug)
+  const document = await pmkin.findDocumentBySlug(
+    decodeURIComponent(params.slug)
+  )
 
   if (!document) {
     return {
@@ -46,7 +48,10 @@ export default async function BlogPost({
 }: {
   params: { slug: string }
 }) {
-  const document = await getDocument(params.slug)
+  console.log('params', params)
+  const document = await pmkin.findDocumentBySlug(
+    decodeURIComponent(params.slug)
+  )
 
   if (!document) {
     return (
