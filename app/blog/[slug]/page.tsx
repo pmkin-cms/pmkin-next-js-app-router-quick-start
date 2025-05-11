@@ -48,7 +48,6 @@ export default async function BlogPost({
 }: {
   params: { slug: string }
 }) {
-  console.log('params', params)
   const document = await pmkin.findDocumentBySlug(
     decodeURIComponent(params.slug)
   )
